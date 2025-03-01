@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'providers/theme_provider.dart';
 import 'profile.dart'; // Add this import
-import 'auth.dart'; // Import for logout navigation
+// Import for logout navigation
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -105,43 +103,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             );
                           },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 25),
-                    _buildSettingsSection(
-                      'Breathing Exercise',
-                      [
-                        _buildSettingsTile(
-                          icon: Icons.timer_outlined,
-                          title: 'Session Duration',
-                          subtitle: 'Adjust default session length',
-                          onTap: () {
-                            _showDurationPicker(context);
-                          },
-                        ),
-                        _buildSettingsTile(
-                          icon: Icons.volume_up_outlined,
-                          title: 'Sound Settings',
-                          subtitle: 'Manage breathing sounds',
-                          onTap: () {
-                            _showSoundSettings(context);
-                          },
-                        ),
-                        _buildSettingsTile(
-                          icon: Icons.vibration,
-                          title: 'Haptic Feedback',
-                          subtitle: 'Toggle vibration during exercises',
-                          trailing: Switch(
-                            value: _hapticFeedback,
-                            onChanged: (value) {
-                              setState(() {
-                                _hapticFeedback = value;
-                              });
-                              // TODO: Save preference
-                            },
-                            activeColor: Colors.green[600],
-                          ),
                         ),
                       ],
                     ),

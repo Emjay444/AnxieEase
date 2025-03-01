@@ -80,193 +80,224 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Get screen dimensions
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: const Color(0xFFF8F9FE),
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            // Custom App Bar
-            SliverToBoxAdapter(
-              child: Container(
-                padding:
-                    EdgeInsets.all(screenWidth * 0.05), // Responsive padding
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(
-                        screenWidth * 0.08), // Responsive radius
+        child: Column(
+          children: [
+            // App Bar with Profile
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.05,
+                vertical: screenWidth * 0.03,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Hello Mejia',
-                              style: TextStyle(
-                                fontSize:
-                                    screenWidth * 0.07, // Responsive font size
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[800],
-                              ),
-                            ),
-                            Text(
-                              'Welcome back',
-                              style: TextStyle(
-                                fontSize:
-                                    screenWidth * 0.04, // Responsive font size
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ],
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Hello Mejia',
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.055,
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF1E2432),
                         ),
-                        CircleAvatar(
-                          radius: screenWidth * 0.06, // Responsive radius
-                          backgroundColor: Colors.green[100],
-                          child: Icon(
-                            Icons.person_outline,
-                            color: Colors.green[800],
-                            size: screenWidth * 0.07, // Responsive icon size
-                          ),
+                      ),
+                      Text(
+                        'Welcome back',
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.035,
+                          color: const Color(0xFF7C8495),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.teal.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
-                    SizedBox(height: screenHeight * 0.02), // Responsive spacing
-                    _buildBreathingCard(),
-                  ],
-                ),
+                    child: CircleAvatar(
+                      radius: screenWidth * 0.055,
+                      backgroundColor: Colors.teal[50],
+                      child: Icon(
+                        Icons.person_outline,
+                        color: Colors.teal[700],
+                        size: screenWidth * 0.055,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 
-            // Quick Actions Section
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Quick Actions',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[800],
-                      ),
+            Expanded(
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.all(screenWidth * 0.05),
+                      child: _buildBreathingCard(),
                     ),
-                    const SizedBox(height: 15),
-                    _buildQuickActionsGrid(),
-                    const SizedBox(height: 25),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Today\'s Tasks',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[800],
-                          ),
-                        ),
-                        TextButton.icon(
-                          onPressed: _showDateTimePicker,
-                          icon: const Icon(Icons.add),
-                          label: const Text('Add Task'),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.green[700],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
 
-            // Tasks List
-            SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              sliver: tasks.isEmpty
-                  ? SliverToBoxAdapter(
-                      child: _buildEmptyTasksPlaceholder(),
-                    )
-                  : SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) => _buildTaskItem(tasks[index]),
-                        childCount: tasks.length,
+                  // Quick Actions Section
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 3,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  color: Colors.teal[700],
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                              ),
+                              SizedBox(width: screenWidth * 0.02),
+                              Text(
+                                'Quick Actions',
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.045,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF1E2432),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+                          _buildQuickActionsGrid(),
+                        ],
                       ),
                     ),
-            ),
+                  ),
 
-            // Trackers Section
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Express Your Feelings',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[800],
+                  // Tasks Section
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.all(screenWidth * 0.05),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 3,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              color: Colors.teal[700],
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                          ),
+                          SizedBox(width: screenWidth * 0.02),
+                          Text(
+                            'Today\'s Tasks',
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.045,
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF1E2432),
+                            ),
+                          ),
+                          const Spacer(),
+                          TextButton.icon(
+                            onPressed: _showDateTimePicker,
+                            icon: Icon(Icons.add,
+                                size: 20, color: Colors.teal[700]),
+                            label: Text(
+                              'Add Task',
+                              style: TextStyle(color: Colors.teal[700]),
+                            ),
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.teal[50],
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 8),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 15),
-                    GridView.count(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                      children: [
-                        _buildBottomSheetItem(
-                          context,
-                          'Mood Tracker',
-                          Icons.mood,
-                          Colors.blue,
-                          _showMoodTracker,
-                        ),
-                        _buildBottomSheetItem(
-                          context,
-                          'Stress Level Rating',
-                          Icons.sentiment_very_dissatisfied,
-                          Colors.red,
-                          _showStressTracker,
-                        ),
-                        _buildBottomSheetItem(
-                          context,
-                          'Physical Symptoms',
-                          Icons.healing,
-                          Colors.green,
-                          _showPhysicalSymptomsTracker,
-                        ),
-                        _buildBottomSheetItem(
-                          context,
-                          'Activities Tracker',
-                          Icons.directions_run,
-                          Colors.orange,
-                          _showActivitiesTracker,
-                        ),
-                      ],
+                  ),
+
+                  // Tasks List
+                  SliverPadding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
+                    sliver: tasks.isEmpty
+                        ? SliverToBoxAdapter(
+                            child: _buildEmptyTasksPlaceholder())
+                        : SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) => Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: _buildTaskItem(tasks[index]),
+                              ),
+                              childCount: tasks.length,
+                            ),
+                          ),
+                  ),
+
+                  // Express Feelings Section
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.all(screenWidth * 0.05),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                width: 3,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  color: Colors.teal[700],
+                                  borderRadius: BorderRadius.circular(3),
+                                ),
+                              ),
+                              SizedBox(width: screenWidth * 0.02),
+                              Text(
+                                'Express Your Feelings',
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.045,
+                                  fontWeight: FontWeight.bold,
+                                  color: const Color(0xFF1E2432),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: screenHeight * 0.02),
+                          _buildFeelingsGrid(),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -413,31 +444,41 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Physical Symptoms',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  ...symptoms.keys.map((symptom) => CheckboxListTile(
-                        title: Text(symptom),
-                        value: symptoms[symptom],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            symptoms[symptom] = value!;
-                          });
-                        },
-                        secondary: const Icon(Icons.local_hospital),
-                      )),
-                ],
+            return SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 16.0,
+                  right: 16.0,
+                  top: 16.0,
+                  bottom: MediaQuery.of(context).viewInsets.bottom + 16.0,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Physical Symptoms',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    ...symptoms.keys.map((symptom) => CheckboxListTile(
+                          title: Text(symptom),
+                          value: symptoms[symptom],
+                          onChanged: (bool? value) {
+                            setState(() {
+                              symptoms[symptom] = value!;
+                            });
+                          },
+                          secondary: const Icon(Icons.local_hospital),
+                        )),
+                  ],
+                ),
               ),
             );
           },
         );
       },
+      isScrollControlled: true,
     );
   }
 
@@ -466,31 +507,99 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildBottomSheetItem(BuildContext context, String title,
-      IconData icon, Color color, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.all(screenWidth * 0.05),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(screenWidth * 0.05),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: color, size: screenWidth * 0.1),
-            SizedBox(height: screenHeight * 0.01),
-            Text(
-              title,
-              style: TextStyle(
-                color: color,
-                fontSize: screenWidth * 0.04,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
+  Widget _buildFeelingsGrid() {
+    final List<Map<String, dynamic>> feelings = [
+      {
+        'title': 'Mood',
+        'icon': Icons.mood,
+        'color': const Color(0xFF4A90E2),
+        'onTap': _showMoodTracker
+      },
+      {
+        'title': 'Stress',
+        'icon': Icons.psychology,
+        'color': const Color(0xFFF5A623),
+        'onTap': _showStressTracker
+      },
+      {
+        'title': 'Symptoms',
+        'icon': Icons.healing,
+        'color': const Color(0xFF50E3C2),
+        'onTap': _showPhysicalSymptomsTracker
+      },
+      {
+        'title': 'Activities',
+        'icon': Icons.directions_run,
+        'color': const Color(0xFF9013FE),
+        'onTap': _showActivitiesTracker
+      },
+    ];
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: screenWidth * 0.03,
+        mainAxisSpacing: screenWidth * 0.03,
+        childAspectRatio: 1.5,
+      ),
+      itemCount: feelings.length,
+      itemBuilder: (context, index) {
+        final feeling = feelings[index];
+        return _buildFeelingsCard(
+          feeling['title'],
+          feeling['icon'],
+          feeling['color'],
+          feeling['onTap'],
+        );
+      },
+    );
+  }
+
+  Widget _buildFeelingsCard(
+      String title, IconData icon, Color color, VoidCallback onTap) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          padding: EdgeInsets.all(screenWidth * 0.04),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: color.withOpacity(0.2),
+              width: 1.5,
             ),
-          ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: EdgeInsets.all(screenWidth * 0.02),
+                decoration: BoxDecoration(
+                  color: color.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  color: color,
+                  size: screenWidth * 0.06,
+                ),
+              ),
+              SizedBox(height: screenWidth * 0.02),
+              Text(
+                title,
+                style: TextStyle(
+                  color: color.withOpacity(0.8),
+                  fontSize: screenWidth * 0.04,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -585,101 +694,180 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildQuickActionsGrid() {
     final List<Map<String, dynamic>> actions = [
       {
-        'icon': Icons.watch_outlined,
-        'title': 'Watch',
-        'screen': WatchScreen(),
-      },
-      {
-        'icon': Icons.navigation,
-        'title': 'Navigation',
-        'screen': SearchScreen(),
-      },
-      {
         'icon': Icons.person_outline,
         'title': 'Profile',
+        'color': const Color(0xFF00634A),
         'screen': const ProfilePage(),
+      },
+      {
+        'icon': Icons.watch_outlined,
+        'title': 'Watch',
+        'color': const Color(0xFF3EAD7A),
+        'screen': const WatchScreen(),
       },
       {
         'icon': Icons.calendar_today,
         'title': 'Calendar',
+        'color': const Color(0xFF3EAD7A),
         'onTap': _showDateTimePicker,
+      },
+      {
+        'icon': Icons.navigation,
+        'title': 'Clinics',
+        'color': const Color(0xFF3EAD7A),
+        'screen': const SearchScreen(),
       },
     ];
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: screenWidth * 0.04,
-        mainAxisSpacing: screenWidth * 0.04,
-        childAspectRatio: screenWidth / (screenHeight / 2.5),
-      ),
-      itemCount: actions.length,
-      itemBuilder: (context, index) {
-        return _buildActionCard(
-          icon: actions[index]['icon'],
-          title: actions[index]['title'],
-          onTap: actions[index]['screen'] != null
-              ? () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => actions[index]['screen'],
+    return SizedBox(
+      height: 90,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: actions
+            .map((action) => Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: _buildActionCard(
+                      icon: action['icon'],
+                      title: action['title'],
+                      color: action['color'],
+                      onTap: action['screen'] != null
+                          ? () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => action['screen'],
+                                ),
+                              )
+                          : action['onTap'],
                     ),
-                  )
-              : actions[index]['onTap'],
-        );
-      },
+                  ),
+                ))
+            .toList(),
+      ),
     );
   }
 
   Widget _buildActionCard({
     required IconData icon,
     required String title,
+    required Color color,
     required VoidCallback onTap,
   }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-          boxShadow: [
-            BoxShadow(
+    final bool isCalendar = title == 'Calendar';
+    final now = DateTime.now();
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
               color: Colors.grey.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              width: 1,
             ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.green[50],
-                shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.04),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
-              child: Icon(
-                icon,
-                color: Colors.green[700],
-                size: 24,
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              isCalendar
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _getMonthAbbreviation(now.month).toUpperCase(),
+                          style: TextStyle(
+                            color: color,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 1),
+                        Text(
+                          '${now.day}',
+                          style: TextStyle(
+                            color: color,
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            height: 1,
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: color.withOpacity(0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        icon,
+                        color: color,
+                        size: 22,
+                      ),
+                    ),
+              const SizedBox(height: 4),
+              Text(
+                title,
+                style: const TextStyle(
+                  color: Color(0xFF1E2432),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  height: 1.2,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Colors.grey[800],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  String _getMonthAbbreviation(int month) {
+    switch (month) {
+      case 1:
+        return 'Jan';
+      case 2:
+        return 'Feb';
+      case 3:
+        return 'Mar';
+      case 4:
+        return 'Apr';
+      case 5:
+        return 'May';
+      case 6:
+        return 'Jun';
+      case 7:
+        return 'Jul';
+      case 8:
+        return 'Aug';
+      case 9:
+        return 'Sep';
+      case 10:
+        return 'Oct';
+      case 11:
+        return 'Nov';
+      case 12:
+        return 'Dec';
+      default:
+        return '';
+    }
   }
 
   Widget _buildEmptyTasksPlaceholder() {
@@ -716,61 +904,68 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildTaskItem(Task task) {
     return Container(
-      margin: EdgeInsets.only(bottom: screenHeight * 0.015),
-      padding: EdgeInsets.symmetric(
-        vertical: screenHeight * 0.01,
-        horizontal: screenWidth * 0.04,
-      ),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.grey.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 8,
-        ),
-        title: Text(
-          task.title,
-          style: TextStyle(
-            decoration: task.isCompleted ? TextDecoration.lineThrough : null,
-            color: task.isCompleted ? Colors.grey : Colors.black87,
-          ),
-        ),
-        subtitle: Text(
-          _formatDateTime(task.dateTime),
-          style: TextStyle(
-            color: Colors.grey[600],
-            fontSize: 12,
-          ),
-        ),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            IconButton(
+      child: Material(
+        color: Colors.transparent,
+        child: ListTile(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          leading: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: task.isCompleted ? Colors.teal[50] : Colors.grey[100],
+            ),
+            child: IconButton(
               icon: Icon(
-                task.isCompleted
-                    ? Icons.check_circle
-                    : Icons.check_circle_outline,
-                color: task.isCompleted ? Colors.green[700] : Colors.grey[400],
+                task.isCompleted ? Icons.check_circle : Icons.circle_outlined,
+                color: task.isCompleted ? Colors.teal[700] : Colors.grey[400],
               ),
               onPressed: () => _toggleTaskCompletion(task),
             ),
-            IconButton(
-              icon: Icon(
-                Icons.delete_outline,
-                color: Colors.red[300],
-              ),
-              onPressed: () => _removeTask(task),
+          ),
+          title: Text(
+            task.title,
+            style: TextStyle(
+              decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+              color: task.isCompleted ? Colors.grey : const Color(0xFF1E2432),
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
-          ],
+          ),
+          subtitle: Row(
+            children: [
+              Icon(
+                Icons.access_time,
+                size: 14,
+                color: Colors.grey[600],
+              ),
+              const SizedBox(width: 4),
+              Text(
+                _formatDateTime(task.dateTime),
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 12,
+                ),
+              ),
+            ],
+          ),
+          trailing: IconButton(
+            icon: Icon(
+              Icons.delete_outline,
+              color: Colors.red[300],
+            ),
+            onPressed: () => _showDeleteConfirmation(task),
+          ),
         ),
       ),
     );
@@ -935,6 +1130,29 @@ class _HomeScreenState extends State<HomeScreen> {
       task.isCompleted = !task.isCompleted;
       _saveTasks();
     });
+  }
+
+  void _showDeleteConfirmation(Task task) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Task'),
+        content: const Text('Are you sure you want to delete this task?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              _removeTask(task);
+              Navigator.pop(context);
+            },
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
   }
 }
 

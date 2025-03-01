@@ -30,7 +30,7 @@ class BreathingExercise {
       holdTime: 7,
       exhaleTime: 8,
       technique: 'Inhale through nose, hold, then exhale through mouth',
-      soundUrl: 'assets/audio/calm_sound.mp3',
+      soundUrl: 'assets/audio/478breathing.mp3',
     ),
     BreathingExercise(
       id: '2',

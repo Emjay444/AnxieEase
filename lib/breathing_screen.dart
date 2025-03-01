@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'services/breathing_service.dart';
+import 'package:flutter/widgets.dart';
 
 class BreathingScreen extends StatefulWidget {
   final BreathingExercise exercise;
@@ -17,6 +18,20 @@ class _BreathingScreenState extends State<BreathingScreen>
   late AudioPlayer _audioPlayer;
   String _currentPhase = 'Get Ready';
   bool _isPlaying = false;
+  String _motivationalMessage = '';
+
+  final List<String> _motivationalMessages = [
+    "You're doing great, keep breathing",
+    "Let go of your worries with each breath",
+    "Feel your anxiety melting away",
+    "You are stronger than your anxiety",
+    "Stay present in this moment",
+    "You're taking control of your peace",
+    "Each breath brings more calmness",
+    "Trust in your inner strength",
+    "You're safe and in control",
+    "This feeling will pass",
+  ];
 
   @override
   void initState() {
@@ -32,7 +47,13 @@ class _BreathingScreenState extends State<BreathingScreen>
       if (status == AnimationStatus.completed) {
         _animationController.reset();
         _animationController.forward();
+        _updateMotivationalMessage();
       }
+    });
+
+    // Show headphone recommendation popup
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _showHeadphoneRecommendation();
     });
   }
 
@@ -50,9 +71,75 @@ class _BreathingScreenState extends State<BreathingScreen>
         widget.exercise.holdOutTime;
   }
 
+  void _showHeadphoneRecommendation() {
+    showDialog(
+      context: context,
+      barrierDismissible: true, // Allow dismissing by tapping outside
+      builder: (BuildContext context) {
+        return GestureDetector(
+          onTap: () => Navigator.of(context).pop(), // Dismiss on tap
+          child: Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pop(), // Dismiss on tap
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.headphones,
+                      size: 50,
+                      color: Colors.green[600],
+                    ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Best Experience with Headphones',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'For optimal relaxation, we recommend using headphones\n\nTap anywhere to continue',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _updateMotivationalMessage() {
+    if (_isPlaying) {
+      setState(() {
+        _motivationalMessage = _motivationalMessages[
+            DateTime.now().millisecondsSinceEpoch %
+                _motivationalMessages.length];
+      });
+    }
+  }
+
   void _startExercise() {
     setState(() {
       _isPlaying = true;
+      _updateMotivationalMessage();
     });
     _animationController.forward();
     if (widget.exercise.soundUrl != null) {
@@ -197,7 +284,6 @@ class _BreathingScreenState extends State<BreathingScreen>
                           return Stack(
                             alignment: Alignment.center,
                             children: [
-                              // Outer circle
                               Container(
                                 width: 300,
                                 height: 300,
@@ -206,7 +292,6 @@ class _BreathingScreenState extends State<BreathingScreen>
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              // Middle circle
                               Container(
                                 width: size + 40,
                                 height: size + 40,
@@ -215,7 +300,6 @@ class _BreathingScreenState extends State<BreathingScreen>
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              // Inner animated circle
                               Container(
                                 width: size,
                                 height: size,
@@ -265,6 +349,36 @@ class _BreathingScreenState extends State<BreathingScreen>
                           );
                         },
                       ),
+
+                      const SizedBox(height: 24),
+
+                      // Motivational Message
+                      if (_isPlaying)
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 32),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16, horizontal: 24),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Text(
+                            _motivationalMessage,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green[700],
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
 
                       const Spacer(),
 

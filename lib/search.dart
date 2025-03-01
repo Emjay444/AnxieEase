@@ -19,7 +19,7 @@ class _SearchScreenState extends State<SearchScreen> {
   List<Marker> _markers = [];
   List<Map<String, dynamic>> _facilities = [];
   bool _isLoading = true;
-  Map<String, Marker> _facilityMarkers = {};
+  final Map<String, Marker> _facilityMarkers = {};
 
   @override
   void initState() {

@@ -7,70 +7,164 @@ class WatchScreen extends StatefulWidget {
   _WatchScreenState createState() => _WatchScreenState();
 }
 
-class _WatchScreenState extends State<WatchScreen> {
+class _WatchScreenState extends State<WatchScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    );
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
+    );
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Color.fromARGB(255, 255, 255, 255), // Solid background color instead of gradient
-        child: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                   IconButton(
-  icon: const Icon(Icons.arrow_back, color: Colors.black), // Change color to black
-  onPressed: () {
-  Navigator.pop(context);
-  },
-),
-
-                    const Spacer(),
-                    const Text(
-                      'Watch',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+      backgroundColor: const Color(0xFF2C3E50),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Custom App Bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    const Spacer(),
-                  ],
-                ),
-              ),
-              
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(top: 24),
-                  padding: const EdgeInsets.all(24),
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF36A169), Color(0xFF00694F)],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () => Navigator.pop(context),
                     ),
                   ),
-                  child: GridView.count(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 16,
-                    crossAxisSpacing: 16,
+                  const Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        'Health Monitor',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.refresh, color: Colors.white),
+                      onPressed: () {
+                        _controller.reset();
+                        _controller.forward();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Main Content
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.only(top: 24),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+                ),
+                child: ClipRRect(
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(32)),
+                  child: Column(
                     children: [
-                      _buildStatCard(title: 'Heart Rate', value: '75', unit: 'bpm', icon: Icons.favorite),
-                      _buildStatCard(title: 'BPM', value: '120', unit: 'bpm', icon: Icons.show_chart),
-                      _buildStatCard(title: 'Low Charging', value: '20', unit: '%', icon: Icons.battery_alert),
-                      _buildStatCard(title: 'Temperature', value: '36.5', unit: '°C', icon: Icons.thermostat),
+                      Expanded(
+                        child: GridView.builder(
+                          padding: const EdgeInsets.all(24),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 20,
+                            childAspectRatio: 0.85,
+                          ),
+                          itemCount: 4,
+                          itemBuilder: (context, index) {
+                            final items = [
+                              {
+                                'title': 'Heart Rate',
+                                'value': '75',
+                                'unit': 'BPM',
+                                'icon': Icons.favorite,
+                                'color': const Color(0xFFFF5252),
+                                'progress': 0.75,
+                                'range': '60-100',
+                              },
+                              {
+                                'title': 'SpO2',
+                                'value': '98',
+                                'unit': '%',
+                                'icon': Icons.water_drop,
+                                'color': const Color(0xFF2196F3),
+                                'progress': 0.98,
+                                'range': '95-100',
+                              },
+                              {
+                                'title': 'Battery',
+                                'value': '85',
+                                'unit': '%',
+                                'icon': Icons.battery_charging_full,
+                                'color': const Color(0xFF4CAF50),
+                                'progress': 0.85,
+                                'range': '0-100',
+                              },
+                              {
+                                'title': 'Temperature',
+                                'value': '36.5',
+                                'unit': '°C',
+                                'icon': Icons.thermostat,
+                                'color': const Color(0xFFFFA726),
+                                'progress': 0.6,
+                                'range': '35-38',
+                              },
+                            ];
+                            return _buildStatCard(
+                              title: items[index]['title'] as String,
+                              value: items[index]['value'] as String,
+                              unit: items[index]['unit'] as String,
+                              icon: items[index]['icon'] as IconData,
+                              color: items[index]['color'] as Color,
+                              progress: items[index]['progress'] as double,
+                              range: items[index]['range'] as String,
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -81,50 +175,131 @@ class _WatchScreenState extends State<WatchScreen> {
     required String value,
     required String unit,
     required IconData icon,
+    required Color color,
+    required double progress,
+    required String range,
   }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.black87, Colors.grey[800]!],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(icon, color: Colors.white),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Text(
-                value,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(width: 4),
-              Text(
-                unit,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
-                  fontSize: 14,
-                ),
-              ),
+    return FadeTransition(
+      opacity: _animation,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              color.withOpacity(0.1),
+              color.withOpacity(0.05),
             ],
           ),
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
-              fontSize: 14,
-            ),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: color.withOpacity(0.1),
+            width: 1,
           ),
-        ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Icon(icon, color: color, size: 24),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    range,
+                    style: TextStyle(
+                      color: color,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Color(0xFF2C3E50),
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  value,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Text(
+                    unit,
+                    style: TextStyle(
+                      color: color.withOpacity(0.7),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Stack(
+              children: [
+                Container(
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+                SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(-1, 0),
+                    end: Offset.zero,
+                  ).animate(_animation),
+                  child: Container(
+                    height: 6,
+                    width: MediaQuery.of(context).size.width * progress * 0.3,
+                    decoration: BoxDecoration(
+                      color: color,
+                      borderRadius: BorderRadius.circular(3),
+                      boxShadow: [
+                        BoxShadow(
+                          color: color.withOpacity(0.3),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
